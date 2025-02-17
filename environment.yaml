@@ -1,0 +1,7 @@
+name: lot-dev
+channels:
+  - conda-forge
+dependencies:
+  # must be kept in sync with the min supported version in pyproject.toml
+  - python >=3.12
+  - pip

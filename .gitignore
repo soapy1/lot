@@ -1,0 +1,21 @@
+# python
+__pycache__
+dist
+build
+*.egg-info
+.pytest_cache
+
+
+# vscode
+.history/
+.vscode/
+*.code-workspace
+
+# MacOS
+**/.DS_Store
+
+/build
+
+*.lockb
+
+notes
