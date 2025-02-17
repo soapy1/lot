@@ -59,9 +59,6 @@ def pull(
         "--target", "-t",
         help="namespace/environment:tag to pull from"
     )],
-    rev: str = typer.Option(
-        help="uuid of the revision to pull"
-    ),
 
 ):
     """Pull an environment from park"""
@@ -74,6 +71,14 @@ def pull(
     tag = env_tag.split(":")[1]
 
     checkpoint_data = api.pull(namespace, environment, tag)
-    checkpoint_dict = yaml.load(checkpoint_data, yaml.FullLoader)
+    conda_lock_yaml = yaml.dump(checkpoint_data.get("conda-lock"))
+    environment_yaml = yaml.dump(checkpoint_data.get("environment"))
 
-    # TODO
+    # assume environment lockfile is in the cwd and is called conda-lock.yml
+    with open("./conda-lock.yml", "w") as f:
+        f.write(conda_lock_yaml)
+
+    # assume environment spec is in the cwd and is called environment.yaml
+    with open("./environment.yaml", "w") as f:
+        f.write(environment_yaml)
+
