@@ -5,3 +5,5 @@ dependencies:
   # must be kept in sync with the min supported version in pyproject.toml
   - python >=3.12
   - pip
+  # testing/dev
+  - conda-lock
