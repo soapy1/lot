@@ -4,6 +4,7 @@ import typer
 from typing_extensions import Annotated
 
 from lot._lot.park import park
+from lot._lot.models import environment
 
 
 app = typer.Typer(
@@ -28,29 +29,14 @@ def push(
 
     namespace = target.split("/")[0]
     env_tag = target.split("/")[1]
-    environment = env_tag.split(":")[0]
+    env = env_tag.split(":")[0]
     tag = env_tag.split(":")[1]
 
-    # assume environment spec is in the cwd and is called environment.yaml
-    env_yaml_raw = ""
-    if os.path.exists("./environment.yaml"):
-        with open("./environment.yaml", "rb") as f:
-            env_yaml_raw = f.read()
-    env_yaml = yaml.load(env_yaml_raw, yaml.FullLoader)
+    # assume environment.yaml and conda-lock.yaml are in the cwd
+    checkpoint = environment.EnvironmentCheckpoint.from_path(os.getcwd(), tag)
+    data = checkpoint.model_dump()
 
-    # assume environment lockfile is in the cwd and is called conda-lock.yml
-    conda_lock_raw = ""
-    if os.path.exists("./conda-lock.yml"):
-        with open("./conda-lock.yml", "rb") as f:
-            conda_lock_raw = f.read()
-    conda_lock = yaml.load(conda_lock_raw, yaml.FullLoader)
-
-    data = {
-        "environment": env_yaml,
-        "conda-lock": conda_lock,
-    }
-
-    api.push(namespace, environment, tag, data)
+    api.push(namespace, env, tag, data)
 
 
 @app.command()
